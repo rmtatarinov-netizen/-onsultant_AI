@@ -1,0 +1,29 @@
+{
+  "table_name": "orders",
+  "columns": ["id", "status", "expected_delivery_date", "delivered_at"],
+  "conditions": [
+    {
+      "column": "status",
+      "operator": "=",
+      "value": "fulfilled"
+    },
+    {
+      "column": "ordered_at",
+      "operator": ">=",
+      "value": "2023-05-01"
+    },
+    {
+      "column": "ordered_at",
+      "operator": "<",
+      "value": "2023-06-01"
+    },
+    {
+      "column": "delivered_at",
+      "operator": ">",
+      "value": {
+        "column_name": "expected_delivery_date"
+      }
+    }
+  ],
+  "order_by": "asc"
+}

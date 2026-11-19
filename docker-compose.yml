@@ -1,0 +1,23 @@
+services:
+  short:
+    build: .
+    command: python bot_short.py
+    env_file: .env
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN_SHORT}
+      DB_PATH: /tmp/short.db
+    restart: unless-stopped
+
+  long:
+    build: .
+    command: python bot_long.py
+    env_file: .env
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN_LONG}
+      DB_PATH: /app/data/consultant.db
+    volumes:
+      - bot-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  bot-data:

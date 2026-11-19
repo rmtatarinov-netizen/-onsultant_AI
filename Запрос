@@ -1,0 +1,91 @@
+POST /v1/chat/completions
+{
+  "model": "gpt-4o-2024-08-06",
+  "messages": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant. The current date is August 6, 2024. You help users query for the data they are looking for by calling the query function."
+    },
+    {
+      "role": "user",
+      "content": "look up all my orders in may of last year that were fulfilled but not delivered on time"
+    }
+  ],
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "query",
+        "description": "Execute a query.",
+        "strict": true,
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "table_name": {
+              "type": "string",
+              "enum": ["orders"]
+            },
+            "columns": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "id",
+                  "status",
+                  "expected_delivery_date",
+                  "delivered_at",
+                  "shipped_at",
+                  "ordered_at",
+                  "canceled_at"
+                ]
+              }
+            },
+            "conditions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "column": {
+                    "type": "string"
+                  },
+                  "operator": {
+                    "type": "string",
+                    "enum": ["=", ">", "<", ">=", "<=", "!="]
+                  },
+                  "value": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "column_name": {
+                            "type": "string"
+                          }
+                        },
+                        "required": ["column_name"],
+                        "additionalProperties": false
+                      }
+                    ]
+                  }
+                },
+                "required": ["column", "operator", "value"],
+                "additionalProperties": false
+              }
+            },
+            "order_by": {
+              "type": "string",
+              "enum": ["asc", "desc"]
+            }
+          },
+          "required": ["table_name", "columns", "conditions", "order_by"],
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}
